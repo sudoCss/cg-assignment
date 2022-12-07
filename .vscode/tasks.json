@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build & run opengl-app",
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "rm -rf build; mkdir build; cd build; g++ -g -I ${workspaceRoot}/include/ ${workspaceRoot}/src/*.cpp -lglut -lGL -lGLU -lGLEW -lglfw -lm -o opengl-app; cd ${workspaceRoot}; ./build/opengl-app"
+        }
+        
+    ]
+}

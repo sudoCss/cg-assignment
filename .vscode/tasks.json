@@ -8,7 +8,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "command": "rm -f ${workspaceRoot}/app; make; ${workspaceRoot}/app"
+            "command": "make; ${workspaceRoot}/app"
         }
     ]
 }

@@ -10,17 +10,16 @@ private:
     float d1 = 4;
     float d2 = 4;
 
-    static const GLuint PIECES_COUNT = 11;
+    static const GLuint PIECES_COUNT = 4;
 
-    const char *textures_file_paths[6] = {
+    const char *textures_file_paths[PIECES_COUNT] = {
         "assets/train/door.bmp",
         "assets/train/floor.bmp",
         "assets/train/roof.bmp",
         "assets/train/wp.bmp",
     };
-    static const GLuint FACES_COUNT = 4;
 
-    GLuint textures_ids[FACES_COUNT] = {0};
+    GLuint textures_ids[PIECES_COUNT] = {0};
 
     enum
     {

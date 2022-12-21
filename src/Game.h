@@ -5,5 +5,6 @@
 #include "Skybox.h"
 #include "Camera.h"
 #include "Train.h"
+#include "Rails.h"
 
 #endif

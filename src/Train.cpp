@@ -10,7 +10,7 @@ Train::~Train()
 
 void Train::load_resources()
 {
-    for (GLuint i = 0; i < FACES_COUNT; i++)
+    for (GLuint i = 0; i < PIECES_COUNT; i++)
     {
         SimpleBMP bmp;
         int err = bmp.load(textures_file_paths[i]);

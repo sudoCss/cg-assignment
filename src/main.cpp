@@ -12,6 +12,8 @@ Skybox skybox;
 
 Train train;
 
+Rails rails;
+
 void cleanup()
 {
 }
@@ -100,9 +102,11 @@ void initRendering()
     cam = Camera();
     skybox = Skybox();
     train = Train();
+    rails = Rails();
 
     skybox.load_resources();
     train.load_resources();
+    rails.load_resources();
 }
 
 void handleResize(int new_screen_width, int new_screen_height)
@@ -127,48 +131,21 @@ void drawScene()
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
 
     cam.render();
+
     glEnable(GL_CULL_FACE);
     skybox.render();
     glDisable(GL_CULL_FACE);
+
     train.render();
-    glColor3d(1, 1, 0);
+
+    glPushMatrix();
+    glTranslated(0, -8.15, 0);
+    rails.render();
+    glPopMatrix();
+
     // glTranslated(0, 0, -88);
     // glRotated(180, 0, 1, 0);
     // train.render();
-
-    // // Ball
-    // glutSolidSphere(5, 100, 100);
-
-    // // Cube
-    // glutSolidCube(3);
-
-    // // Cube with textures
-    // // same as skybox code
-
-    // // Torus
-    // glutSolidTorus(3, 7, 100, 100);
-
-    // // Teapot
-    // glutSolidTeapot(5);
-
-    // // Cone
-    // glutSolidCone(3, 5, 100, 100);
-
-    // Table
-
-    // Chair
-
-    // Drawing
-
-    // Pyramid
-
-    // Toy Car
-
-    // Pencil
-
-    // Color Pencil
-
-    // Swing
 
     glutSwapBuffers();
 }

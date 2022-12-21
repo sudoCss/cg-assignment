@@ -1,30 +1,78 @@
-#include <iostream>
-#include <stdlib.h>
-
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #define DEFAULT_WINDOW_WIDTH 800
 #define DEFAULT_WINDOW_HEIGHT 800
 #define WINDOW_TITLE "OpenGL Application"
-#define TIMER_MS 25
+#define TIMER_MS 1000.0f / 60.0f
 
-#define SIMPLEBMP_OPENGL
-#include "simplebmp.h"
+#include "Game.h"
+
+// camera cam;
+Camera cam;
+
+Skybox skybox;
+
+Train train;
 
 void cleanup()
 {
 }
 
-void handleKeypress(unsigned char key, int x, int y)
+void handleKeypress(unsigned char key, int xx, int yy)
 {
+    GLfloat speed = 1.0f, rotate_speed = 1.0f;
+
     switch (key)
     {
-    case '\r': // Enter key
+    case 'A':
+    case 'a':
+        cam.MoveLeft(speed);
+        break;
+    case 'D':
+    case 'd':
+        cam.MoveRight(speed);
+        break;
+    case 'W':
+    case 'w':
+        cam.MoveForward(speed);
+        break;
+    case 'S':
+    case 's':
+        cam.MoveBackward(speed);
+        break;
+    case 'Q':
+    case 'q':
+        cam.RotateY(rotate_speed);
+        break;
+    case 'E':
+    case 'e':
+        cam.RotateY(-rotate_speed);
+        break;
+    case '1':
+        cam.RotateX(-rotate_speed);
+        break;
+    case '3':
+        cam.RotateX(rotate_speed);
+        break;
+    case '2':
+        cam.MoveUpward(speed);
+        break;
+    case '4':
+        cam.MoveDownward(speed);
+        break;
+    case 'O':
+    case 'o':
+        train.open_front_door();
+        break;
+    case 'P':
+    case 'p':
+        train.close_front_door();
+        break;
+    case 'N':
+    case 'n':
+        train.open_back_door();
+        break;
+    case 'M':
+    case 'm':
+        train.close_back_door();
         break;
     case 27: // Escape key
         cleanup();
@@ -32,7 +80,6 @@ void handleKeypress(unsigned char key, int x, int y)
     }
 }
 
-GLuint textureId;
 void initRendering()
 {
     // Background color
@@ -42,21 +89,20 @@ void initRendering()
     glEnable(GL_DEPTH_TEST);                           // Enable 3D layering
     glEnable(GL_COLOR_MATERIAL);                       // Enable Better coloring
     glEnable(GL_LIGHTING);                             // Enable Lighting
-    glEnable(GL_LIGHT0);                               // Enable the first light
     glEnable(GL_NORMALIZE);                            // Enable Normalizing
-    glEnable(GL_CULL_FACE);                            // Enable Cull face effect
-    glEnable(GL_TEXTURE_2D);                           // Enable textures
     glShadeModel(GL_SMOOTH);                           // Set Shading model to (Smooth)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Set the blend function
+    glutSetCursor(GLUT_CURSOR_NONE);                   // Hide the cursor
 
-    SimpleBMP bmp;
-    int err = bmp.load("./assets/vtr.bmp");
-    if (err)
-        std::cout << "ERR" << std::endl;
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    bmp.glTexImage2D();
-    bmp.destroy();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+    cam = Camera();
+    skybox = Skybox();
+    train = Train();
+
+    skybox.load_resources();
+    train.load_resources();
 }
 
 void handleResize(int new_screen_width, int new_screen_height)
@@ -67,7 +113,8 @@ void handleResize(int new_screen_width, int new_screen_height)
     gluPerspective(45.0,                                                 // The camera angle
                    (double)new_screen_width / (double)new_screen_height, // The width-to-height ratio
                    1.0,                                                  // The near z clipping coordinate
-                   1000.0);                                              // The far z clipping coordinate
+                   20000.0);                                             // The far z clipping coordinate
+    glutPostRedisplay();
 }
 
 void drawScene()
@@ -76,29 +123,52 @@ void drawScene()
     glMatrixMode(GL_MODELVIEW);                         // Switch to the drawing perspective
     glLoadIdentity();                                   // Reset the drawing perspective
 
-    GLfloat ambientLight[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    GLfloat ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
 
-    GLfloat directedLight[] = {0.7f, 0.7f, 0.7f, 1.0f};
-    GLfloat directedLightPos[] = {-10.0f, 15.0f, 20.0f, 0.0f};
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, directedLight);
-    glLightfv(GL_LIGHT0, GL_POSITION, directedLightPos);
+    cam.render();
+    glEnable(GL_CULL_FACE);
+    skybox.render();
+    glDisable(GL_CULL_FACE);
+    train.render();
+    glColor3d(1, 1, 0);
+    // glTranslated(0, 0, -88);
+    // glRotated(180, 0, 1, 0);
+    // train.render();
 
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    // // Ball
+    // glutSolidSphere(5, 100, 100);
 
+    // // Cube
+    // glutSolidCube(3);
 
-    glBegin(GL_TRIANGLES);
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(-2.5f, -2.5f, -8.5f);
-    glTexCoord2f(10.0f, 0.0f);
-    glVertex3f(2.5f, -2.5f, -8.5f);
-    glTexCoord2f(5.0f, 5.0f);
-    glVertex3f(0.0f, 2.5f, -8.5f);
-    glEnd();
+    // // Cube with textures
+    // // same as skybox code
+
+    // // Torus
+    // glutSolidTorus(3, 7, 100, 100);
+
+    // // Teapot
+    // glutSolidTeapot(5);
+
+    // // Cone
+    // glutSolidCone(3, 5, 100, 100);
+
+    // Table
+
+    // Chair
+
+    // Drawing
+
+    // Pyramid
+
+    // Toy Car
+
+    // Pencil
+
+    // Color Pencil
+
+    // Swing
 
     glutSwapBuffers();
 }
@@ -122,6 +192,7 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(drawScene);
     glutKeyboardFunc(handleKeypress);
+    glutFullScreen();
     glutReshapeFunc(handleResize);
     glutTimerFunc(TIMER_MS, update, 0);
 

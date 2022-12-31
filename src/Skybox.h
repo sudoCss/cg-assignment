@@ -15,7 +15,7 @@ private:
         "assets/skybox/down.bmp",
     };
     GLuint textures_ids[6] = {0};
-    GLfloat d = 5000;
+    GLfloat d = 500;
     static const GLuint FACES_COUNT = 6;
     enum
     {
@@ -29,31 +29,31 @@ private:
     GLfloat coordinates[FACES_COUNT][4][5] = {
         // front
         {
-            {-d, -d, -d, 0, 0},
-            {d, -d, -d, 1, 0},
+            {-d, -0.1, -d, 0, 0},
+            {d, -0.1, -d, 1, 0},
             {d, d, -d, 1, 1},
             {-d, d, -d, 0, 1},
         },
         //  back
         {
-            {-d, -d, d, 0, 0},
+            {-d, -0.1, d, 0, 0},
             {-d, d, d, 0, 1},
             {d, d, d, 1, 1},
-            {d, -d, d, 1, 0},
+            {d, -0.1, d, 1, 0},
         },
         //  left
         {
-            {-d, -d, d, 1, 0},
-            {-d, -d, -d, 0, 0},
+            {-d, -0.1, d, 1, 0},
+            {-d, -0.1, -d, 0, 0},
             {-d, d, -d, 0, 1},
             {-d, d, d, 1, 1},
         },
         //  right
         {
-            {d, -d, d, 1, 0},
+            {d, -0.1, d, 1, 0},
             {d, d, d, 1, 1},
             {d, d, -d, 0, 1},
-            {d, -d, -d, 0, 0},
+            {d, -0.1, -d, 0, 0},
         },
         //  up
         {
@@ -64,10 +64,10 @@ private:
         },
         //  down
         {
-            {-d, -d, -d, 0, 0},
-            {-d, -d, d, 0, 1},
-            {d, -d, d, 1, 1},
-            {d, -d, -d, 1, 0},
+            {-d, -0.1, -d, 0, 0},
+            {-d, -0.1, d, 0, 1},
+            {d, -0.1, d, 1, 1},
+            {d, -0.1, -d, 1, 0},
         },
     };
 

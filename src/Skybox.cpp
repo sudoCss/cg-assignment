@@ -38,6 +38,7 @@ void Skybox::bind_texture(GLuint face)
 void Skybox::unbind_texture()
 {
     glDisable(GL_TEXTURE_2D);
+    glColor3d(1, 1, 1);
 }
 
 void Skybox::render()

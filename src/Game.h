@@ -4,7 +4,7 @@
 #include "Includes.h"
 #include "Skybox.h"
 #include "Camera.h"
-#include "Train.h"
+#include "Cabin.h"
 #include "Rails.h"
 
 #endif

@@ -30,7 +30,7 @@ void Rails::bind_texture(GLuint face)
 {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -40,6 +40,7 @@ void Rails::bind_texture(GLuint face)
 void Rails::unbind_texture()
 {
     glDisable(GL_TEXTURE_2D);
+    glColor3d(1, 1, 1);
 }
 
 void Rails::render()

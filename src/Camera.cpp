@@ -75,7 +75,7 @@ float operator*(Vector3dStruct v, Vector3dStruct u) // dot product
 Camera::Camera()
 {
 
-    Position = Vector3dCreate(0.0, 0.0, 0.0);
+    Position = Vector3dCreate(0.0, 8.0, 0.0);
     View = Vector3dCreate(0.0, 0.0, -1.0);
     RightVector = Vector3dCreate(1.0, 0.0, 0.0);
     LeftVector = Vector3dCreate(-1.0, 0.0, 0.0);

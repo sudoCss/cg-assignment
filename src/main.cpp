@@ -5,12 +5,11 @@
 
 #include "Game.h"
 
-// camera cam;
 Camera cam;
 
 Skybox skybox;
 
-Train train;
+Cabin cabin;
 
 Rails rails;
 
@@ -49,10 +48,10 @@ void handleKeypress(unsigned char key, int xx, int yy)
         cam.RotateY(-rotate_speed);
         break;
     case '1':
-        cam.RotateX(-rotate_speed);
+        cam.RotateX(rotate_speed);
         break;
     case '3':
-        cam.RotateX(rotate_speed);
+        cam.RotateX(-rotate_speed);
         break;
     case '2':
         cam.MoveUpward(speed);
@@ -62,19 +61,19 @@ void handleKeypress(unsigned char key, int xx, int yy)
         break;
     case 'O':
     case 'o':
-        train.open_front_door();
+        cabin.open_front_door();
         break;
     case 'P':
     case 'p':
-        train.close_front_door();
+        cabin.close_front_door();
         break;
     case 'N':
     case 'n':
-        train.open_back_door();
+        cabin.open_back_door();
         break;
     case 'M':
     case 'm':
-        train.close_back_door();
+        cabin.close_back_door();
         break;
     case 27: // Escape key
         cleanup();
@@ -96,16 +95,18 @@ void initRendering()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Set the blend function
     glutSetCursor(GLUT_CURSOR_NONE);                   // Hide the cursor
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+
+    glEnable(GL_LIGHT0);
 
     cam = Camera();
     skybox = Skybox();
-    train = Train();
+    cabin = Cabin();
     rails = Rails();
 
     skybox.load_resources();
-    train.load_resources();
+    cabin.load_resources();
     rails.load_resources();
 }
 
@@ -127,8 +128,18 @@ void drawScene()
     glMatrixMode(GL_MODELVIEW);                         // Switch to the drawing perspective
     glLoadIdentity();                                   // Reset the drawing perspective
 
+    // Add ambient light
     GLfloat ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+
+    GLfloat light_position[] = {1000.0, 1000.0, 10.0, 1.0};
+    GLfloat light_ambient[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat light_diffuse[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat light_specular[] = {0.001, 0.001, 0.001, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
     cam.render();
 
@@ -136,16 +147,12 @@ void drawScene()
     skybox.render();
     glDisable(GL_CULL_FACE);
 
-    train.render();
-
     glPushMatrix();
-    glTranslated(0, -8.15, 0);
-    rails.render();
+    glTranslated(0, 8.15, -30);
+    cabin.render();
     glPopMatrix();
 
-    // glTranslated(0, 0, -88);
-    // glRotated(180, 0, 1, 0);
-    // train.render();
+    rails.render();
 
     glutSwapBuffers();
 }
